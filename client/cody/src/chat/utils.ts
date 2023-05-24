@@ -59,6 +59,7 @@ export async function filesExist(filePaths: string[]): Promise<{ [filePath: stri
 // - "https://github.com/sourcegraph/deploy-sourcegraph-k8s.git"
 // - "git@github.com:sourcegraph/sourcegraph.git"
 export function convertGitCloneURLToCodebaseName(cloneURL: string): string | null {
+    console.log(cloneURL)
     if (!cloneURL) {
         console.error(`Unable to determine the git clone URL for this workspace.\ngit output: ${cloneURL}`)
         return null
@@ -103,6 +104,9 @@ export async function getCodebaseContext(
 ): Promise<CodebaseContext | null> {
     const client = new SourcegraphGraphQLAPIClient(config)
     const workspaceRoot = editor.getWorkspaceRootPath()
+    console.log(workspaceRoot)
+    const editorFilePath = editor.getActiveTextEditor()
+    console.log(editorFilePath?.filePath)
     if (!workspaceRoot) {
         return null
     }
@@ -110,6 +114,7 @@ export async function getCodebaseContext(
     const gitOutput = gitCommand.stdout.toString().trim()
     // Get codebase from config or fallback to getting repository name from git clone URL
     const codebase = config.codebase || convertGitCloneURLToCodebaseName(gitOutput)
+    console.log(codebase)
     if (!codebase) {
         return null
     }
